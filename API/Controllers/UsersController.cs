@@ -1,14 +1,14 @@
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]  // la api se va a formar como // GET /api/users
+    [Authorize] //a alto nivel digo que todos los endpoints deben usar un token autorizado para consumirse
+    public class UsersController : BaseApiController
 
-    public class UsersController : ControllerBase
     {
         private readonly DataContext _context; //variable de clase de tipo Data context
 
@@ -19,6 +19,7 @@ namespace API.Controllers
 
 
 
+        [AllowAnonymous] //especifico que el getUsers no necesita bearer token para usarse, esto no es seguro
         [HttpGet]
 
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers() //la task representa una operacion async que retorna un value
