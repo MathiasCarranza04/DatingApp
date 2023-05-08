@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from './_services/account.service';
+import { User } from './_models/user';
 
 @Component({
   selector: 'app-root',
@@ -8,17 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'Dating app';
-  users: any;
 
-  constructor(private http: HttpClient) {}
-
-  //OnInit permite añadir una inicializacion extra, hago el get sobre el servicio del BE, el get retorna un observable
+  constructor(private accountService: AccountService) {} //inyectamos servicio account
 
   ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/users').subscribe({
-      next: (response) => (this.users = response),
-      error: (error) => console.log(error),
-      complete: () => console.log('Request has completed'),
-    });
+    this.setCurrentUser();
+  }
+
+  setCurrentUser() {
+    const userString = localStorage.getItem('user'); // la key user esta seteada en el accountservi linea 22
+    if (!userString) return; //sino tenemos el usuario
+    const user: User = JSON.parse(userString); //si tenemos el usuario del paso anterior lo parseamos
+    this.accountService.setCurrentUser(user);
   }
 }
