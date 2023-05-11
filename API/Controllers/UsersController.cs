@@ -1,5 +1,8 @@
 using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,30 +13,31 @@ namespace API.Controllers
     public class UsersController : BaseApiController
 
     {
-        private readonly DataContext _context; //variable de clase de tipo Data context
 
-        public UsersController(DataContext context) //constructor,instancia de DataContext, con esto tenemos disponible una session de la db
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+
+        public UsersController(IUserRepository userRepository, IMapper mapper) //instancia de interfaz IUser
         {
-            _context = context;
+            _mapper = mapper;
+            _userRepository = userRepository;
         }
 
 
-
-        [AllowAnonymous] //especifico que el getUsers no necesita bearer token para usarse, esto no es seguro
         [HttpGet]
 
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers() //la task representa una operacion async que retorna un value
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers() //la task representa una operacion async que retorna un value
         {
-            var users = await _context.Users.ToListAsync(); //del contexto de la session de la db retorno toda la lista de users
-            return users;
+            var users = await _userRepository.GetMembersAsync(); //obtengo de la db los users porque _userRepository tiene el db context
+            return Ok(users); //retorno de esos user lo especificado en el dto
+
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> GetUser(int id)
+        [HttpGet("{username}")]
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
+            return await _userRepository.GetMemberAsync(username);
 
-            var user = await _context.Users.FindAsync(id);
-            return user;
         }
 
     }

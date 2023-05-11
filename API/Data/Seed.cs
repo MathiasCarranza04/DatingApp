@@ -18,14 +18,14 @@ namespace API.Data
 
             var users = JsonSerializer.Deserialize<List<AppUser>>(userData, options); //deserializo los user para tener un objecto c#
 
-            foreach (var user in users) //recorro todos los users para asignarles un password
+            foreach (var user in users)
             {
                 using var hmac = new HMACSHA512();
                 user.UserName = user.UserName.ToLower();
-                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd)"));
+                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd"));
                 user.PasswordSalt = hmac.Key;
 
-                context.Users.Add(user); // añado el user al for each
+                context.Users.Add(user);
 
             }
 
