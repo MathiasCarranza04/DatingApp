@@ -4,6 +4,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -22,6 +23,8 @@ namespace API.Controllers
             _context = context;
 
         }
+
+
 
         [HttpPost("register")]  // creo endpoint con ruta >> //api/account/register
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -47,6 +50,7 @@ namespace API.Controllers
                 Token = _tokenService.CreateToken(user)
             };
         }
+
 
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
