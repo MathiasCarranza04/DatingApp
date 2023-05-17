@@ -1,11 +1,9 @@
-using API.Data;
+using System.Security.Claims;
 using API.DTOs;
-using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -39,6 +37,21 @@ namespace API.Controllers
             return await _userRepository.GetMemberAsync(username);
 
         }
+
+
+        [HttpPut] //no necesitamos el userName porque ya estoy autenticado para updatear mi user
+        public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // NameIdentifier mapea con NameId que esta en el tokenService create token
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null) return NotFound();
+            _mapper.Map(memberUpdateDto, user); //updateo todas las propiedades que paso en memberupdatedto al user.sin guardar en db
+
+            if (await _userRepository.SaveAllAsync()) return NoContent(); //actualizo en db
+            return BadRequest("Fail to update user");
+
+        }
+
 
     }
 }

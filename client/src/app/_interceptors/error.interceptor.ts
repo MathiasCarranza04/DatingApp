@@ -53,7 +53,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
             default:
               this.toastr.error('Something unexpected went wrong');
-              console.log(error);
+              console.log('EL ERROR QUE VEMOS ES ' + error.error);
               break;
           }
         }
