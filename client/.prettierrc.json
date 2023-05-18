@@ -2,7 +2,7 @@
   "parser": "typescript",
   "printWidth": 200,
   "tabWidth": 2,
-  "trailingComma": "none",
+  "trailingComma": "all",
   "bracketSpacing": true,
   "useTabs": false,
   "semi": false,

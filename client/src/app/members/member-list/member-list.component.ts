@@ -17,8 +17,7 @@ export class MemberListComponent implements OnInit {
 
   loadMembers() {
     this.memberService.getMembers().subscribe({
-      // prettier-ignore
-      next: members => this.members = members //obtengo lista de members y la guardo en mi array de members
+      next: members => (this.members = members) //obtengo lista de members y la guardo en mi array de members
     })
   }
 }
