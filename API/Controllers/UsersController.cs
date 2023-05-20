@@ -86,5 +86,26 @@ namespace API.Controllers
         }
 
 
+        [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+
+            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null) return NotFound();
+            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId); // busco dentro de las fotos del user con el id que me manda el user en la api
+            if (photo == null) return NotFound();
+            if (photo.IsMain) return BadRequest("this is already your main photo");
+
+            var currentMain = user.Photos.FirstOrDefault(x => x.IsMain); //obtengo la foto que actualmente es la main
+            if (currentMain != null) currentMain.IsMain = false; //a la foto que tenia como perfil, la main, la paso a false
+            photo.IsMain = true;
+
+            if (await _userRepository.SaveAllAsync()) return NoContent(); //actualizo la db y todo ok
+            return BadRequest("Problem setting the main photo");
+
+
+        }
+
+
     }
 }
